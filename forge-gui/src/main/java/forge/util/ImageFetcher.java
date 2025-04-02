@@ -99,7 +99,7 @@ public abstract class ImageFetcher {
             final String filename = imageKey.substring(ImageKeys.BOOSTER_PREFIX.length());
             downloadUrls.add("https://downloads.cardforge.org/images/products/boosters/"+ filename);
             System.out.println("Fetching from "+downloadUrls);
-
+            System.out.println(filename);
 
             FileUtil.ensureDirectoryExists(ForgeConstants.CACHE_BOOSTER_PICS_DIR);
             File destFile = new File(ForgeConstants.CACHE_BOOSTER_PICS_DIR, filename);

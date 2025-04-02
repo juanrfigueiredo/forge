@@ -114,8 +114,6 @@ public class BoosterPack extends SealedProduct {
         if (SealedProduct.specialSets.contains(edition) || edition.equals("?")) {
             return "b:" + getName().substring(0, getName().indexOf(getItemType()) - 1);
         }
-        int cntPics = StaticData.instance().getEditions().get(edition).getCntBoosterPictures();
-        String suffix = (1 >= cntPics) ? "" : ("_" + artIndex);
-        return ImageKeys.BOOSTER_PREFIX + edition + suffix;
+        return ImageKeys.BOOSTER_PREFIX + edition;
     }
 }
