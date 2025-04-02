@@ -1067,8 +1067,7 @@ public class CardFactoryUtil {
                     " | IsPresent$ Card.Self+cameUnderControlSinceLastUpkeep | Secondary$ True | " +
                     "TriggerDescription$ " + inst.getReminderText();
 
-            String effect = "DB$ Sacrifice | SacValid$ Self | "
-                    + "Echo$ " + cost;
+            String effect = "DB$ Sacrifice | SacValid$ Self | Echo$ " + cost;
 
             final Trigger trigger = TriggerHandler.parseTrigger(upkeepTrig, card, intrinsic);
             trigger.setOverridingAbility(AbilityFactory.getAbility(effect, card));
@@ -4116,7 +4115,7 @@ public class CardFactoryUtil {
     }
 
     public static void setupAdventureAbility(Card card) {
-        if (card.getCurrentStateName() != CardStateName.Adventure) {
+        if (!card.getType().hasSubtype("Adventure")) {
             return;
         }
         SpellAbility sa = card.getFirstSpellAbility();
@@ -4149,6 +4148,20 @@ public class CardFactoryUtil {
 
         re.setOverridingAbility(saExile);
         card.addReplacementEffect(re);
+    }
+    public static void setupOmenAbility(Card card) {
+        if (!card.getType().hasSubtype("Omen")) {
+            return;
+        }
+        SpellAbility sa = card.getFirstSpellAbility();
+        if (sa == null) {
+            return;
+        }
+        sa.setCardState(card.getCurrentState());
+
+        String abEffect = "DB$ ChangeZone | Defined$ Self | Origin$ Stack | Destination$ Library | Shuffle$ True | StackDescription$ None";
+        AbilitySub saEffect = (AbilitySub)AbilityFactory.getAbility(abEffect, card);
+        sa.appendSubAbility(saEffect);
     }
 
     public static void setFaceDownState(Card c, SpellAbility sa) {

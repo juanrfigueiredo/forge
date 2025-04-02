@@ -268,7 +268,6 @@ public class MagicStack /* extends MyObservable */ implements Iterable<SpellAbil
             }
 
             Map<AbilityKey, Object> runParams = AbilityKey.mapFromPlayer(source.getController());
-            runParams.put(AbilityKey.Cost, sp.getPayCosts());
             runParams.put(AbilityKey.Activator, activator);
             runParams.put(AbilityKey.SpellAbility, sp);
             game.getTriggerHandler().runTrigger(TriggerType.SpellAbilityCast, runParams, true);
@@ -389,7 +388,6 @@ public class MagicStack /* extends MyObservable */ implements Iterable<SpellAbil
             }
         }
 
-        runParams.put(AbilityKey.Cost, sp.getPayCosts());
         runParams.put(AbilityKey.Activator, sp.getActivatingPlayer());
         runParams.put(AbilityKey.SpellAbility, si.getSpellAbility());
         runParams.put(AbilityKey.CurrentStormCount, thisTurnCast.size());
@@ -472,15 +470,16 @@ public class MagicStack /* extends MyObservable */ implements Iterable<SpellAbil
 
                     runParams = AbilityKey.newMap();
                     runParams.put(AbilityKey.SourceSA, s);
-                    if (tgt instanceof Card && !((Card) tgt).hasBecomeTargetThisTurn()) {
-                        runParams.put(AbilityKey.FirstTime, null);
-                        ((Card) tgt).setBecameTargetThisTurn(true);
-                    }
-                    if (tgt instanceof Card && !((Card) tgt).isValiant() && activator.equals(((Card) tgt).getController())) {
-                        runParams.put(AbilityKey.Valiant, null);
-                        ((Card) tgt).setValiant(true);
-                    }
                     runParams.put(AbilityKey.Target, tgt);
+                    if (tgt instanceof Card c) {
+                        if (!c.hasBecomeTargetThisTurn()) {
+                            runParams.put(AbilityKey.FirstTime, null);
+                        }
+                        if (c.isValiant(activator)) {
+                            runParams.put(AbilityKey.Valiant, null);
+                        }
+                        c.addTargetFromThisTurn(activator);
+                    }
                     game.getTriggerHandler().runTrigger(TriggerType.BecomesTarget, runParams, false);
                 }
             }
